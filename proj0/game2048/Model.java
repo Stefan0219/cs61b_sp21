@@ -5,7 +5,7 @@ import java.util.Observable;
 
 
 /** The state of a game of 2048.
- *  @author TODO: YOUR NAME HERE
+ *  @author TODO: Stefan Tian
  */
 public class Model extends Observable {
     /** Current contents of the board. */
@@ -137,7 +137,13 @@ public class Model extends Observable {
      *  Empty spaces are stored as null.
      * */
     public static boolean emptySpaceExists(Board b) {
-        // TODO: Fill in this function.
+        for (int i = 0; i< b.size();i++){
+            for(int j = 0; j < b.size();j++){
+                if(b.tile(i,j)==null){
+                    return true;
+                }
+            }
+        }
         return false;
     }
 
@@ -147,7 +153,16 @@ public class Model extends Observable {
      * given a Tile object t, we get its value with t.value().
      */
     public static boolean maxTileExists(Board b) {
-        // TODO: Fill in this function.
+        for (int i = 0;i < b.size(); i++){
+            for (int j = 0 ;j < b.size();j++){
+                if (b.tile(i,j)==null){
+                    continue;
+                }
+                if (b.tile(i,j).value() == MAX_PIECE){
+                    return true;
+                }
+            }
+        }
         return false;
     }
 
@@ -159,6 +174,45 @@ public class Model extends Observable {
      */
     public static boolean atLeastOneMoveExists(Board b) {
         // TODO: Fill in this function.
+        if(emptySpaceExists(b)){
+            return true;
+        }else {
+            for (int i = 0;i < b.size();i++){
+                for (int j = 0;j < b.size();j++){
+                    int curValue = b.tile(i,j).value();
+                    for (int k = 0; k < 4 ; k++){
+                        int col = 0;
+                        int row = 0;
+                        switch (k){ // up down left right
+                            case 0:
+                                row = i-1;
+                                col = j;
+                                break;
+                            case 1:
+                                row = i+1;
+                                col = j;
+                                break;
+                            case 2:
+                                row = i;
+                                col = j-1;
+                                break;
+                            case 3:
+                                row = i;
+                                col = j+1;
+                                break;
+                        }
+                        if((col>=b.size()||col<0)||(row >= b.size()||row < 0)){
+                            continue;
+                        }else{
+                            int adjacentValue = b.tile(col,row).value();
+                            if (curValue == adjacentValue){
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
         return false;
     }
 
