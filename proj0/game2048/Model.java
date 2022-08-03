@@ -1,11 +1,12 @@
 package game2048;
 
+import java.util.Arrays;
 import java.util.Formatter;
 import java.util.Observable;
 
 
 /** The state of a game of 2048.
- *  @author: Stefan Tian
+ *  @author: Stefan
  */
 public class Model extends Observable {
     /** Current contents of the board. */
@@ -108,20 +109,17 @@ public class Model extends Observable {
      * */
     public boolean tilt(Side side) {
         boolean changed;
+        boolean [] chang = {false};
         changed = false;
+        this.board.setViewingPerspective(side);
 
         // TODO: Modify this.board (and perhaps this.score) to account
         // for the tilt to the Side SIDE. If the board changed, set the
         // changed local variable to true.
-        for(int col = 0;col <board.size();col ++){
-            for(int row = 0; row< board.size();row++){
-                Tile t = this.board.tile(col,row);
-                if(t != null){
-                    changed = true;
-                    board.move(col,3,t);
-                    System.out.println("why?");
-                    score += 1;
-                }
+        for (int col = 0;col<board.size();col++){
+            moveOneColumn(col,chang);
+            if (chang[0]==true){
+                changed = true;
             }
         }
 
@@ -129,9 +127,80 @@ public class Model extends Observable {
         if (changed) {
             setChanged();
         }
+        this.board.setViewingPerspective(Side.NORTH);
         return changed;
     }
 
+    /*move the certain COL column in order to make the game work*/
+    public boolean moveOneColumn(int col,boolean[] c){
+        boolean[] moved = {false,false,false,false};
+        boolean returnValue = false;
+        //check each row is empty or not
+        for (int row = board.size()-1;row>=0;row --){
+            Tile tempTile = board.tile(col,row);
+            if (tempTile == null){
+                continue;
+            }else {
+                int curValue = tempTile.value();
+                int desRow = findFirstMovableRow(moved, col,row,curValue);
+                if (desRow>row){
+                    Tile tile = board.tile(col,row);
+                    board.move(col,desRow,tile);
+                    returnValue = true;
+                }
+            }
+        }
+        c[0] = returnValue;
+        return returnValue;
+    }
+
+
+    int findFirstMovableRow(boolean[] moved,int col,int _row,int value){
+        for (int row = _row+1;row<= board.size()-1;row++){
+            Tile tile = board.tile(col,row);
+            if (tile == null){
+                continue;
+            } else{
+                int sucValue = tile.value();
+                if (sucValue==value&&moved[row]==false){
+                    moved[row] =true;
+                    score += 2*value;
+                    return row;
+                }else if (sucValue==value&&moved[row]==true){
+                    return row-1;
+                }else if (sucValue!=value){
+                    return row-1;
+                }else return board.size()-1;
+            }
+        }
+        return board.size()-1;
+    }
+
+    void setMovedDefalt(boolean[] moved){
+        Arrays.fill(moved, false);
+    }
+    int getNextTileRow(int col,int _row){
+        for (int row = _row;row>=0;row--){
+            Tile temp = board.tile(col,row);
+            if (temp==null){
+                continue;
+            }else {
+                return row;
+            }
+        }
+        return -1;
+    }
+    int getFirstTileColFromCurRow(int _col,int _row){
+        for (int row =_row;row >=0;row--){
+            Tile tile = board.tile(_col,row);
+            if (tile==null){
+                continue;
+            }else {
+                return row;
+            }
+        }
+        return -1;
+    }
     /** Checks if the game is over and sets the gameOver variable
      *  appropriately.
      */
@@ -229,7 +298,7 @@ public class Model extends Observable {
 
 
     @Override
-     /** Returns the model as a string, used for debugging. */
+    /** Returns the model as a string, used for debugging. */
     public String toString() {
         Formatter out = new Formatter();
         out.format("%n[%n");
