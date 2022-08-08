@@ -34,7 +34,9 @@ public class AList<Item> {
     /** Inserts X into the back of the list. */
     public void addLast(Item x) {
         if (size == items.length) {
-            resize(size + 1);
+            //int capacity = (int) Math.round(items.length * 1.1);
+            int capacity = size+1;
+            resize(capacity);//which is awful.
         }
 
         items[size] = x;

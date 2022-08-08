@@ -1,5 +1,7 @@
 package timingtest;
 
+import edu.princeton.cs.algs4.Stopwatch;
+
 /** An SLList is a list of integers, which hides the terrible truth
  * of the nakedness within. */
 public class SLList<Item> {
@@ -55,15 +57,20 @@ public class SLList<Item> {
 	}
 
 	/** returns last item in the list */
-	public Item getLast() {
+	public double getLast() {
 		IntNode p = sentinel;
-
 		/* Advance p to the end of the list. */
+		double time = 0.0;
+		int a =0;
+		Stopwatch sw = new Stopwatch();
 		while (p.next != null) {
 			p = p.next;
+			a++;
 		}
+		System.out.println("sad"+a);
+		System.out.println("time is "+ sw.elapsedTime());
+		return sw.elapsedTime();
 
-		return p.item;
 	}
 
 
