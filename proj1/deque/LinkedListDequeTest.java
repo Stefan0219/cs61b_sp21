@@ -1,7 +1,7 @@
 package deque;
 
-import afu.org.checkerframework.checker.igj.qual.I;
 import org.junit.Test;
+import java.util.Random;
 import static org.junit.Assert.*;
 
 
@@ -129,5 +129,37 @@ public class LinkedListDequeTest {
             int ge = lld.getRecursive(i);
             assertEquals(i,ge);
         }
+    }
+
+    @Test
+    public void iteratorTest(){
+        LinkedListDeque<Integer> lld = new LinkedListDeque<>();
+        lld.addLast(1);
+        lld.addLast(2);
+        lld.addLast(3);
+        lld.removeFirst();
+        for (var i: lld){
+            System.out.println(i);
+        }
+    }
+
+    @Test
+    public void equalsTest(){
+        LinkedListDeque<Integer> lld1 = new LinkedListDeque<>();
+        LinkedListDeque<Integer> lld2 = new LinkedListDeque<>();
+        for (int i = 0 ;i< 1000;i++){
+            int rdm = (new Random()).nextInt(2);
+            switch (rdm){
+                case 0:
+                    lld1.addLast(i);
+                    lld2.addLast(i);
+                case 1:
+                    lld1.removeFirst();
+                    lld2.removeFirst();
+            }
+        }
+        assertTrue(lld1.euqals(lld2));
+        assertTrue(lld1.euqals(lld1));
+        assertFalse(lld1.euqals(null));
     }
 }
