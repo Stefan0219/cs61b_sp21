@@ -8,6 +8,7 @@ import java.util.HashSet;
 public class Staging implements Serializable {
     public static File CWD = Repository.CWD;
     public static File STAGING = Utils.join(Repository.GITLET_DIR,"staging");
+
     public static HashMap<File,String> map;
     public static HashSet<File> Files;
 
@@ -23,5 +24,10 @@ public class Staging implements Serializable {
             ret.append(file.getName()).append(" ");
         }
         return ret.toString();
+    }
+    public static void resetStaging(){
+        Staging.Files = new HashSet<>();
+        Staging.STAGING.delete();
+        Staging.store();
     }
 }

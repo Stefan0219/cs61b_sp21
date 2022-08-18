@@ -29,7 +29,6 @@ public class Blob {
         File store = Utils.join(storedDir,shaId);
         store.createNewFile();
         Utils.writeContents(store,contentet);
-        return;
     }
 
     Blob(File source,File storedDir){

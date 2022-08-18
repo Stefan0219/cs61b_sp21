@@ -2,6 +2,7 @@ package gitlet;
 
 import java.io.File;
 import java.util.HashSet;
+/**These commands all corresponding to the Git command.*/
 public class Commands {
     public static void init(){
         Repository.GITLET_DIR.mkdir();
@@ -9,7 +10,7 @@ public class Commands {
         //TODO
         return;
     }
-    /**Save the added files to the staging area*/
+    /**Add the added files to the staging area*/
     public static void add(String args[]){
         if (!Repository.GITLET_DIR.exists()){
             System.out.println("Not in an initialized Gitlet directory.");
@@ -38,5 +39,16 @@ public class Commands {
             System.out.println("Incorrect operands.");
             System.exit(0);
         }
+    }
+
+    public static void resetStaging(){
+        Staging.resetStaging();
+    }
+
+    public static void log(){
+        System.out.println(Log.readLog());
+    }
+    public static void commit(String[] args){
+        new Commit(args);
     }
 }

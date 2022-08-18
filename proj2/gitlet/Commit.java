@@ -1,6 +1,7 @@
 package gitlet;
 
 // TODO: any imports you need here
+import java.io.File;
 import java.io.Serializable;
 import java.util.Date; // TODO: You'll likely use this in this class
 import java.util.Map;
@@ -22,12 +23,16 @@ public class Commit implements Serializable {
      */
 
     /** The message of this Commit. */
-    private String message;
+    private String commitMessage;
+
+
+    /**HEAD points to previous commit.*/
+    public static File HEAD = Utils.join(Repository.GITLET_DIR,"Head");
 
     /** The time when this commit was created*/
 
     Date commitDate;
-    /** The id which belongs to current commit.*/
+    /** The Sha-1 id which belongs to current commit.*/
     String commitId;
 
     /**The id which belongs to previous commit.*/
@@ -37,25 +42,47 @@ public class Commit implements Serializable {
     Map<String,String> fileVer;
     /* TODO: fill in the rest of this class. */
 
-    public String getMessage(){
-        return this.message;
+    public String getCommitMessage(){
+        return this.commitMessage;
     }
 
     public String genShaId(){
         String dateString = commitDate.toString();
         if (fileVer!=null){
             String fileMapString = fileVer.toString();
-            return Utils.sha1(commitDate.toString(),fileVer.toString(),message);
+            return Utils.sha1(commitDate.toString(),fileVer.toString(), commitMessage);
         }
-        return Utils.sha1(commitDate.toString(),message);
+        return Utils.sha1(commitDate.toString(), commitMessage);
     }
 
     /**init gitlet*/
     Commit(){
-        this.message = "initial commit";
+        this.commitMessage = "initial commit";
         commitDate =  new Date();
         this.commitId = genShaId();
         this.parentId = null;
-        System.out.println(commitId);
+        storeHead(commitId);
+    }
+
+    /**Command commit*/
+    Commit(String []args){
+        //TODO
+        if (args[1]==null){
+            //commit with nothing identifier is prohibited.
+            System.exit(0);
+        }
+        else {
+            this.commitMessage = args[1];
+            commitDate = new Date();
+            this.commitId = genShaId();
+            this.parentId = readHead();
+        }
+    }
+    public static void storeHead(String s){
+        Utils.writeContents(HEAD,s);
+    }
+
+    public static String readHead(){
+        return Utils.readContentsAsString(HEAD);
     }
 }
